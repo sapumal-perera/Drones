@@ -1,5 +1,4 @@
 package com.example.drones;
-
 import java.util.List;
 
 public interface DroneService {
@@ -12,8 +11,9 @@ public interface DroneService {
 
     List<Drone> getAvailableDrones();
 
+    Drone getDroneBySerialNumber(String serialNum);
+
     int getDroneBatteryLevel(String serialNumber);
 
-    String loadDrone(String serialNumber, List<Medication> medications);
+    List<Medication> loadDrone(String serialNumber, List<Medication> medications);
 }
-

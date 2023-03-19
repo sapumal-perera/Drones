@@ -1,5 +1,7 @@
 package com.example.drones;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,37 +20,39 @@ public class DronesApplication {
     }
 
     @Autowired
-    private DroneService droneService;
-
+    private DroneManager droneDataManager;
+    Gson gsonBuilder = new GsonBuilder().create();
     @PostMapping
     public ResponseEntity<?> registerDrone(@RequestBody Drone drone) {
-        droneService.registerDrone(drone);
+        droneDataManager.registerDrone(drone);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{serialNumber}/medications")
     public ResponseEntity<?> loadDrone(@PathVariable String serialNumber,
                                        @RequestBody List<Medication> medications) {
-
-        String loadedDrones = droneService.loadDrone(serialNumber, medications);
-        return ResponseEntity.ok(loadedDrones);
+        ResponseDTO loadedDronesRes = droneDataManager.loadDrone(serialNumber, medications);
+        String responseJson = gsonBuilder.toJson(loadedDronesRes);
+        return ResponseEntity.ok(responseJson);
     }
 
     @GetMapping("/{serialNumber}/medications")
-    public ResponseEntity<List<Medication>> getLoadedMedications(@PathVariable String serialNumber) {
-        List<Medication> medications = droneService.getLoadedMedications(serialNumber);
-        return ResponseEntity.ok(medications);
+    public ResponseEntity<?> getLoadedMedications(@PathVariable String serialNumber) {
+        ResponseDTO medications = droneDataManager.getLoadedMedications(serialNumber);
+        String responseJson = gsonBuilder.toJson(medications);
+        return ResponseEntity.ok(responseJson);
     }
 
     @GetMapping("/available")
     public ResponseEntity<List<Drone>> getAvailableDrones() {
-        List<Drone> availableDrones = droneService.getAvailableDrones();
+        List<Drone> availableDrones = droneDataManager.getAvailableDrones();
         return ResponseEntity.ok(availableDrones);
     }
 
     @GetMapping("/{serialNumber}/battery")
-    public ResponseEntity<Integer> getDroneBatteryLevel(@PathVariable String serialNumber) {
-        int batteryLevel = droneService.getDroneBatteryLevel(serialNumber);
-        return ResponseEntity.ok(batteryLevel);
+    public ResponseEntity<String> getDroneBatteryLevel(@PathVariable String serialNumber) {
+        ResponseDTO batteryLevel = droneDataManager.getDroneBatteryLevel(serialNumber);
+        String responseJson = gsonBuilder.toJson(batteryLevel);
+        return ResponseEntity.ok(responseJson);
     }
 }

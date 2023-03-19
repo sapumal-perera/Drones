@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,12 @@ class DronesApplicationTests {
     private Map<String, List<Medication>> loadedMedications;
 
     @InjectMocks
-    private DroneServiceImpl droneService;
+    private DroneServiceImpl droneDataManager;
 
     @Test
     public void testRegisterDrone() {
         Drone drone = new Drone("001", DroneModel.CRUISERWEIGHT, 500, 100, DroneState.LOADED, null);
-        droneService.registerDrone(drone);
+        droneDataManager.registerDrone(drone);
         verify(drones).add(drone);
     }
 
@@ -44,7 +43,7 @@ class DronesApplicationTests {
                 new Medication("Med1", 100, "CODE1", "image1.png", null),
                 new Medication("Med2", 200, "CODE2", "image2.png", null)
         );
-        droneService.loadDrone(droneSerialNumber, medications);
+        droneDataManager.loadDrone(droneSerialNumber, medications);
         verify(loadedMedications).put(droneSerialNumber, medications);
 //        verify(droneService).updateDroneState(droneSerialNumber, "LOADED");
     }
@@ -57,7 +56,7 @@ class DronesApplicationTests {
                 new Medication("Med2", 200, "CODE2", "image2.png", null)
         );
         when(loadedMedications.get(droneSerialNumber)).thenReturn(medications);
-        List<Medication> result = droneService.getLoadedMedications(droneSerialNumber);
+        List<Medication> result = droneDataManager.getLoadedMedications(droneSerialNumber);
         assertEquals(medications, result);
     }
 
@@ -74,7 +73,7 @@ class DronesApplicationTests {
                 new Drone("001", DroneModel.LIGHTWEIGHT, 500, 100,  DroneState.IDLE, null),
                 new Drone("003", DroneModel.CRUISERWEIGHT, 500, 75, DroneState.IDLE, null)
         );
-        List<Drone> result = droneService.getAvailableDrones();
+        List<Drone> result = droneDataManager.getAvailableDrones();
         assertEquals(expectedDrones, result);
     }
 
@@ -83,7 +82,7 @@ class DronesApplicationTests {
         String droneSerialNumber = "001";
         // TODO: mock getting drone battery level from the actual drone
         int expectedBatteryLevel = 80;
-        int result = droneService.getDroneBatteryLevel(droneSerialNumber);
+        int result = droneDataManager.getDroneBatteryLevel(droneSerialNumber);
         assertEquals(expectedBatteryLevel, result);
     }
 }
