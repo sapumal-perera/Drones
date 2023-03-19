@@ -5,15 +5,17 @@ public interface DroneService {
 
     Drone registerDrone(Drone drone);
 
-    Medication loadMedicationsToDrone(String serialNumber, Medication medication);
+    Medication loadMedicationsToDrone(Medication medication);
 
     List<Medication> getLoadedMedications(String serialNumber);
 
     List<Drone> getAvailableDrones();
 
+    List<Drone> getAllDrones();
+
     Drone getDroneBySerialNumber(String serialNum);
 
     int getDroneBatteryLevel(String serialNumber);
 
-    List<Medication> loadDrone(String serialNumber, List<Medication> medications);
+    List<Medication> loadDrone(List<Medication> medications);
 }

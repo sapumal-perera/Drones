@@ -5,7 +5,6 @@ package com.example.drones;
         import jakarta.transaction.Transactional;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.stereotype.Service;
-
         import java.util.List;
 
 @Service
@@ -26,9 +25,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public Medication loadMedicationsToDrone(String serialNumber, Medication medication) {
-        Drone drone = droneRepository.findBySerialNumber(serialNumber);
-        medication.setDrone(drone);
+    public Medication loadMedicationsToDrone( Medication medication) {
         return medicationRepository.save(medication);
     }
 
@@ -49,6 +46,11 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
+    public List<Drone> getAllDrones() {
+        return droneRepository.findAll();
+    }
+
+    @Override
     public int getDroneBatteryLevel(String serialNumber) {
         Drone drone = droneRepository.findBySerialNumber(serialNumber);
         if(drone != null) {
@@ -59,8 +61,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Medication> loadDrone(String serialNumber, List<Medication> medications) {
-        Drone drone = droneRepository.findBySerialNumber(serialNumber);
+    public List<Medication> loadDrone(List<Medication> medications) {
         return medicationRepository.saveAll(medications);
     }
 }

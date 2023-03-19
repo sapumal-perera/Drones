@@ -43,7 +43,7 @@ class DronesApplicationTests {
                 new Medication("Med1", 100, "CODE1", "image1.png", null),
                 new Medication("Med2", 200, "CODE2", "image2.png", null)
         );
-        droneDataManager.loadDrone(droneSerialNumber, medications);
+        droneDataManager.loadDrone(medications);
         verify(loadedMedications).put(droneSerialNumber, medications);
 //        verify(droneService).updateDroneState(droneSerialNumber, "LOADED");
     }

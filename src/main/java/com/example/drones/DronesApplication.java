@@ -6,12 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
 @RestController
+@EnableScheduling
 @RequestMapping("/drones")
 public class DronesApplication {
 
@@ -24,21 +32,27 @@ public class DronesApplication {
     Gson gsonBuilder = new GsonBuilder().create();
     @PostMapping
     public ResponseEntity<?> registerDrone(@RequestBody Drone drone) {
-        droneDataManager.registerDrone(drone);
-        return ResponseEntity.ok().build();
+        ResponseDTO loadedDronesRes = droneDataManager.registerDrone(drone);
+        droneDataManager.logBatteryCapacity();
+        return ResponseEntity.ok(loadedDronesRes);
     }
 
-    @PutMapping("/{serialNumber}/medications")
-    public ResponseEntity<?> loadDrone(@PathVariable String serialNumber,
-                                       @RequestBody List<Medication> medications) {
-        ResponseDTO loadedDronesRes = droneDataManager.loadDrone(serialNumber, medications);
+    @PutMapping("/{serialNumber}/medication")
+    public ResponseEntity<?> addMedicationsToDrone(@PathVariable String serialNumber,
+                                                     @RequestBody Medication medications) {
+        ResponseDTO loadedDronesRes = droneDataManager.addMedicationsToDrone(serialNumber, medications);
         String responseJson = gsonBuilder.toJson(loadedDronesRes);
         return ResponseEntity.ok(responseJson);
     }
 
+    @Scheduled(fixedRate = 5000)
+    public void logBatteryCapacity() {
+        droneDataManager.logBatteryCapacity();
+    }
+
     @GetMapping("/{serialNumber}/medications")
     public ResponseEntity<?> getLoadedMedications(@PathVariable String serialNumber) {
-        ResponseDTO medications = droneDataManager.getLoadedMedications(serialNumber);
+        List<Medication> medications = droneDataManager.getLoadedMedications(serialNumber);
         String responseJson = gsonBuilder.toJson(medications);
         return ResponseEntity.ok(responseJson);
     }
@@ -46,6 +60,12 @@ public class DronesApplication {
     @GetMapping("/available")
     public ResponseEntity<List<Drone>> getAvailableDrones() {
         List<Drone> availableDrones = droneDataManager.getAvailableDrones();
+        return ResponseEntity.ok(availableDrones);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Drone>> getAllDrones() {
+        List<Drone> availableDrones = droneDataManager.getAllDrones();
         return ResponseEntity.ok(availableDrones);
     }
 
