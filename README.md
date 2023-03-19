@@ -27,7 +27,7 @@ The application will start running on `http://localhost:8080`.
 
 ### Adding a Drone
 
-To add a drone, send a POST request to `/drones` with the following payload:
+To add a drone, send a POST request to `/drones/new` with the following payload:
 
 ```json
 {
@@ -54,7 +54,10 @@ To add a drone, send a POST request to `/drones` with the following payload:
 
 ### Viewing Drone Battery Capacity
 
-To view battery capacity send a GET request to `/drones/{serialNumber}/battery` 
+To view battery capacity send a GET request to `/drones/{serialNumber}/battery`
+
+###### Battery capacity log will be saved in to drone_battery_log.txt file in every 5 minutes
+
 
 ### Viewing available drones
 
@@ -80,3 +83,7 @@ To add medication in to a drone send a PUT request to `/drones/{serialNumber}/me
   "image": "http://example.com/image1.jpg"
 } 
 ```
+
+### To unload medication from a drone
+
+To unload medication from a drone send a GET request to `/drones/{serialNumber}/unload`

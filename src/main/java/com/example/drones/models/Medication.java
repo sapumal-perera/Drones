@@ -1,6 +1,4 @@
 package com.example.drones.models;
-
-import com.example.drones.models.Drone;
 import jakarta.persistence.*;
 
 @Entity

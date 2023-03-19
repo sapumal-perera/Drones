@@ -15,24 +15,45 @@ public class MedicationController {
     @Autowired
     private MedicationService medicationService;
 
-    @PostMapping
+    /**
+     * addMedication
+     * @param medication
+     * @return
+     */
+    @PostMapping("/new")
     public ResponseEntity<Medication> addMedication(@RequestBody Medication medication) {
         Medication newMedication = medicationService.createMedication(medication);
         return ResponseEntity.ok(newMedication);
     }
 
+    /**
+     * getMedication
+     * @param serialNum
+     * @return
+     */
     @GetMapping("/{serialNum}")
     public ResponseEntity<List<Medication>> getMedication(@PathVariable("serialNum") String serialNum) {
         List<Medication> medication = medicationService.getMedicationByDroneSerialNumber(serialNum);
         return ResponseEntity.ok(medication);
     }
 
+    /**
+     * updateMedication
+     * @param id
+     * @param medication
+     * @return
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Medication> updateMedication(@PathVariable("id") Long id, @RequestBody Medication medication) {
         Medication updatedMedication = medicationService.updateMedication(id, medication);
         return ResponseEntity.ok(updatedMedication);
     }
 
+    /**
+     * deleteMedication
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMedication(@PathVariable("id") Long id) {
         medicationService.deleteMedication(id);

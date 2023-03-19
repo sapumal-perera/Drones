@@ -33,6 +33,11 @@ public class DroneManagerImpl implements DroneManager {
     @Autowired
     private DroneServiceImpl droneDataService;
 
+    /**
+     * registerDrone
+     * @param drone
+     * @return
+     */
     @Override
     public ResponseDTO registerDrone(Drone drone) {
         if (!validateSerialNumber(drone.getSerialNumber())) {
@@ -46,78 +51,117 @@ public class DroneManagerImpl implements DroneManager {
             } else {
                 return new ResponseDTO(500, "Error occurred while adding the drone");
             }
-
         }
-
     }
 
+    /**
+     * addMedicationsToDrone
+     * @param serialNumber
+     * @param medication
+     * @return
+     */
     @Override
     public ResponseDTO addMedicationsToDrone(String serialNumber, Medication medication) {
         Drone drone = droneDataService.getDroneBySerialNumber(serialNumber);
-        if (!isMedicinesValid(medication)) {
-            return new ResponseDTO(400, "The medication name contains other characters besides letters, numbers, hyphens, and underscores.");
-        }  else if(getAvailableMedicationWeight(drone) < medication.getWeight()) {
-            return new ResponseDTO(400, "The medication load exceeds the weight limit.");
-        } else if (!isDroneBatteryAvailable(drone)) {
-            return new ResponseDTO(400, "Drone battery level is low. unable to load medication");
-        } else {
-            drone.setState(DroneState.LOADING);
-            medication.setDrone(drone.getSerialNumber());
-            Medication loadedMed =  droneDataService.loadMedicationsToDrone(medication);
-            if(loadedMed != null) {
-                drone.setState(DroneState.LOADED);
-                return new ResponseDTO(200, "Medication loaded successfully");
+        if(drone != null) {
+            if (!isMedicinesValid(medication)) {
+                return new ResponseDTO(400, "The medication name contains other characters besides letters, numbers, hyphens, and underscores.");
+            }  else if(getAvailableMedicationWeight(drone) < medication.getWeight()) {
+                return new ResponseDTO(400, "The medication load exceeds the weight limit.");
+            } else if (!isDroneBatteryAvailable(drone)) {
+                return new ResponseDTO(400, "Drone battery level is low. unable to load medication");
             } else {
-                return new ResponseDTO(500, "Error occurred");
+                drone.setState(DroneState.LOADING);
+                medication.setDrone(drone.getSerialNumber());
+                Medication loadedMed =  droneDataService.loadMedicationsToDrone(medication);
+                if(loadedMed != null) {
+                    drone.setState(DroneState.LOADED);
+                    return new ResponseDTO(200, "Medication loaded successfully");
+                } else {
+                    return new ResponseDTO(500, "Error occurred");
+                }
             }
+        } else {
+            return new ResponseDTO(400, "Drone not found");
         }
     }
 
+    /**
+     * getLoadedMedications
+     * @param serialNumber
+     * @return
+     */
     @Override
     public List<Medication> getLoadedMedications(String serialNumber) {
         return medicationService.getMedicationByDroneSerialNumber(serialNumber);
     }
 
+    /**
+     * getAvailableDrones
+     * @return
+     */
     @Override
     public List<Drone> getAvailableDrones() {
         return droneDataService.getAvailableDrones();
     }
 
+    /**
+     * getAllDrones
+     * @return
+     */
     @Override
     public List<Drone> getAllDrones() {
         return droneDataService.getAllDrones();
     }
 
+    /**
+     * getDroneBatteryLevel
+     * @param serialNumber
+     * @return
+     */
     @Override
     public ResponseDTO getDroneBatteryLevel(String serialNumber) {
         int droneBattery = droneDataService.getDroneBatteryLevel(serialNumber);
         if(droneBattery != -1) {
             return new ResponseDTO(200, Integer.toString(droneBattery));
         } else {
-            return new ResponseDTO(500, "Error occurred");
+            return new ResponseDTO(500, "Drone not found. Please check the serial number");
         }
 
     }
 
+    /**
+     * unloadMedication
+     * @param serialNumber
+     * @return
+     */
     @Override
     public ResponseDTO unloadMedication(String serialNumber) {
         Drone drone = droneDataService.getDroneBySerialNumber(serialNumber);
-        List<Medication> medicationsForDrone = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
-        if(drone != null && medicationsForDrone !=null && medicationsForDrone.size() > 0) {
-            drone.setState(DroneState.IDLE);
-            for (Medication med: medicationsForDrone) {
-                try{
-                    medicationService.deleteMedication(med.getId());
-                } catch (Exception e) {
-                    return new ResponseDTO(500, "Error occurred");
+        if(drone != null) {
+            List<Medication> medicationsForDrone = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
+            if(drone != null && medicationsForDrone !=null && medicationsForDrone.size() > 0) {
+                drone.setState(DroneState.IDLE);
+                for (Medication med: medicationsForDrone) {
+                    try{
+                        medicationService.deleteMedication(med.getId());
+                    } catch (Exception e) {
+                        return new ResponseDTO(500, "Error occurred");
+                    }
                 }
+            } else {
+                return new ResponseDTO(200, "No medicine available to unload");
             }
+            return new ResponseDTO(200, "Medicine unloaded successfully");
         } else {
-            return new ResponseDTO(200, "No medicine available to unload");
+            return new ResponseDTO(500, "Drone not found. Please check the serial number");
         }
-        return new ResponseDTO(200, "Medicine unloaded successfully");
+
     }
 
+    /**
+     * logBatteryCapacity
+     */
     public void logBatteryCapacity() {
         try {
             File file = new File("drone_battery_log.txt");
@@ -136,14 +180,29 @@ public class DroneManagerImpl implements DroneManager {
         }
     }
 
+    /**
+     * isMedicinesValid
+     * @param medication
+     * @return
+     */
     public boolean isMedicinesValid(Medication medication) {
         return medication.getName().matches("^[a-zA-Z0-9_-]+$") || medication.getCode().matches("^[A-Z0-9_]+$");
     }
 
+    /**
+     * isDroneBatteryAvailable
+     * @param drone
+     * @return
+     */
     public boolean isDroneBatteryAvailable(Drone drone) {
         return drone.getBatteryCapacity() > BATTERY_LIMIT;
     }
 
+    /**
+     * getAvailableMedicationWeight
+     * @param drone
+     * @return
+     */
     public double getAvailableMedicationWeight(Drone drone) {
         List <Medication> medications = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
         double loadedWeight = 0;
@@ -157,10 +216,20 @@ public class DroneManagerImpl implements DroneManager {
         return drone.getWeightLimit() - loadedWeight;
     }
 
+    /**
+     * validateWightLimit
+     * @param weightLomit
+     * @return
+     */
     public boolean validateWightLimit(double weightLomit) {
         return weightLomit <= WEIGHT_LIMIT;
     }
 
+    /**
+     * validateSerialNumber
+     * @param serialNum
+     * @return
+     */
     public boolean validateSerialNumber(String serialNum) {
         return serialNum.length() <= SERIAL_CHARACTER_LIMIT;
     }
