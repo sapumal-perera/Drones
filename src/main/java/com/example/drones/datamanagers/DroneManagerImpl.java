@@ -195,7 +195,7 @@ public class DroneManagerImpl implements DroneManager {
      * @return
      */
     public boolean isDroneBatteryAvailable(Drone drone) {
-        return drone.getBatteryCapacity() > BATTERY_LIMIT;
+        return drone.getBatteryCapacity() >= BATTERY_LIMIT;
     }
 
     /**
