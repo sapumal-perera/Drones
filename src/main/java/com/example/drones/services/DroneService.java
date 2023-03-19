@@ -10,8 +10,6 @@ public interface DroneService {
 
     Medication loadMedicationsToDrone(Medication medication);
 
-    List<Medication> getLoadedMedications(String serialNumber);
-
     List<Drone> getAvailableDrones();
 
     List<Drone> getAllDrones();

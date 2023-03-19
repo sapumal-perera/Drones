@@ -31,12 +31,27 @@ To add a drone, send a POST request to `/drones` with the following payload:
 
 ```json
 {
-    "name": "Drone 1",
-    "serialNumber": "001",
-    "batteryCapacity": 50,
-    "state": "IDLE"
+  "serialNumber": "001",
+  "model": "HEAVYWEIGHT",
+  "weightLimit": 400,
+  "batteryCapacity": 30,
+  "state": "IDLE"
 }
 ```
+###### Allowed drone models:
+    LIGHTWEIGHT
+    MIDDLEWEIGHT
+    CRUISERWEIGHT
+    HEAVYWEIGHT
+
+###### Allowed drone states:     
+    IDLE
+    LOADING
+    LOADED
+    DELIVERING
+    DELIVERED
+    RETURNING
+
 ### Viewing Drone Battery Capacity
 
 To view battery capacity send a GET request to `/drones/{serialNumber}/battery` 
@@ -44,6 +59,10 @@ To view battery capacity send a GET request to `/drones/{serialNumber}/battery`
 ### Viewing available drones
 
 To view available drones send a GET request to `/drones/available` 
+
+### Viewing all drones
+
+To view available drones send a GET request to `/drones/all`
 
 ### Viewing medication in a drone
 

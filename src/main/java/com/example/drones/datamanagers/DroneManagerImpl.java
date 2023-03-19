@@ -62,7 +62,7 @@ public class DroneManagerImpl implements DroneManager {
             return new ResponseDTO(400, "Drone battery level is low. unable to load medication");
         } else {
             drone.setState(DroneState.LOADING);
-            medication.setDrone(drone);
+            medication.setDrone(drone.getSerialNumber());
             Medication loadedMed =  droneDataService.loadMedicationsToDrone(medication);
             if(loadedMed != null) {
                 drone.setState(DroneState.LOADED);
@@ -75,7 +75,7 @@ public class DroneManagerImpl implements DroneManager {
 
     @Override
     public List<Medication> getLoadedMedications(String serialNumber) {
-        return droneDataService.getLoadedMedications(serialNumber);
+        return medicationService.getMedicationByDroneSerialNumber(serialNumber);
     }
 
     @Override
@@ -102,9 +102,10 @@ public class DroneManagerImpl implements DroneManager {
     @Override
     public ResponseDTO unloadMedication(String serialNumber) {
         Drone drone = droneDataService.getDroneBySerialNumber(serialNumber);
-        if(drone != null && drone.getMedications().size() > 0) {
+        List<Medication> medicationsForDrone = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
+        if(drone != null && medicationsForDrone !=null && medicationsForDrone.size() > 0) {
             drone.setState(DroneState.IDLE);
-            for (Medication med: drone.getMedications()) {
+            for (Medication med: medicationsForDrone) {
                 try{
                     medicationService.deleteMedication(med.getId());
                 } catch (Exception e) {
@@ -144,7 +145,7 @@ public class DroneManagerImpl implements DroneManager {
     }
 
     public double getAvailableMedicationWeight(Drone drone) {
-        List <Medication> medications = drone.getMedications();
+        List <Medication> medications = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
         double loadedWeight = 0;
         if(medications.size() > 0) {
             for(Medication med: medications) {

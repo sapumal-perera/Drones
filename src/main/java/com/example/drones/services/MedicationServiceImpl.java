@@ -21,8 +21,8 @@ public class MedicationServiceImpl implements MedicationService {
     }
 
     @Override
-    public Medication getMedicationById(Long id) {
-        return medicationRepository.findById(id).orElse(null);
+    public List<Medication> getMedicationByDroneSerialNumber(String serialNum) {
+        return medicationRepository.findByDroneSerialNumber(serialNum);
     }
 
 

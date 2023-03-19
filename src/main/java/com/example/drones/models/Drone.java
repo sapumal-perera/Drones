@@ -26,8 +26,8 @@ public class Drone {
     @Enumerated(EnumType.STRING)
     private DroneState state;
 
-    @OneToMany(mappedBy = "drone", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Medication> medications = new ArrayList<>();
+//    @OneToMany(mappedBy = "drone", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Medication> medications = new ArrayList<>();
 
     public Drone(String serialNumber, DroneModel model, int weightLimit, int batteryCapacity, DroneState state, List<Medication> medications) {
         this.serialNumber = serialNumber;
@@ -35,7 +35,7 @@ public class Drone {
         this.weightLimit = weightLimit;
         this.batteryCapacity = batteryCapacity;
         this.state = state;
-        this.medications = medications;
+      //  this.medications = medications;
     }
 
     public Drone() {
@@ -90,12 +90,12 @@ public class Drone {
         this.state = state;
     }
 
-    public List<Medication> getMedications() {
-        return medications;
-    }
-
-    public void setMedications(List<Medication> medications) {
-        this.medications = medications;
-    }
+//    public List<Medication> getMedications() {
+//        return medications;
+//    }
+//
+//    public void setMedications(List<Medication> medications) {
+//        this.medications = medications;
+//    }
 }
 

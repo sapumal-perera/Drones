@@ -14,17 +14,15 @@ public class Medication {
     private int weight;
     private String code;
     private String image;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "drone_serial_number")
-    private Drone drone;
+    private String droneSerialNumber;
 
 
-    public Medication(String name, int weight, String code, String image, Drone drone) {
+    public Medication(String name, int weight, String code, String image, String drone) {
         this.name = name;
         this.weight = weight;
         this.code = code;
         this.image = image;
-        this.drone = drone;
+        this.droneSerialNumber = drone;
     }
 
     public Medication() {
@@ -71,12 +69,12 @@ public class Medication {
         this.image = image;
     }
 
-    public Drone getDrone() {
-        return drone;
+    public String getDrone() {
+        return droneSerialNumber;
     }
 
-    public void setDrone(Drone drone) {
-        this.drone = drone;
+    public void setDrone(String drone) {
+        this.droneSerialNumber = drone;
     }
 }
 

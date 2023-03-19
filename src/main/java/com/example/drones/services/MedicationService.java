@@ -7,7 +7,7 @@ import java.util.List;
 public interface MedicationService {
 
      List<Medication> getAllMedications();
-     Medication getMedicationById(Long id);
+     List<Medication> getMedicationByDroneSerialNumber(String id);
      Medication createMedication(Medication medication);
      Medication updateMedication(Long id, Medication medicationDetails);
 

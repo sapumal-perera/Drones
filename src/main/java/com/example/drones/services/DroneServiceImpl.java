@@ -35,12 +35,6 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public List<Medication> getLoadedMedications(String serialNumber) {
-        Drone drone = droneRepository.findBySerialNumber(serialNumber);
-        return drone.getMedications();
-    }
-
-    @Override
     public Drone getDroneBySerialNumber(String serialNum) {
         return droneRepository.findBySerialNumber(serialNum);
     }

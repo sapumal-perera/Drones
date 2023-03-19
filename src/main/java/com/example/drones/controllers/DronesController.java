@@ -24,7 +24,6 @@ public class DronesController {
     @PostMapping
     public ResponseEntity<?> registerDrone(@RequestBody Drone drone) {
         ResponseDTO loadedDronesRes = droneDataManager.registerDrone(drone);
-        droneDataManager.logBatteryCapacity();
         return ResponseEntity.ok(loadedDronesRes);
     }
 
@@ -36,7 +35,7 @@ public class DronesController {
         return ResponseEntity.ok(responseJson);
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 30000)
     public void logBatteryCapacity() {
         droneDataManager.logBatteryCapacity();
     }

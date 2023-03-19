@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/medications")
 public class MedicationController {
@@ -19,9 +21,9 @@ public class MedicationController {
         return ResponseEntity.ok(newMedication);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Medication> getMedication(@PathVariable("id") Long id) {
-        Medication medication = medicationService.getMedicationById(id);
+    @GetMapping("/{serialNum}")
+    public ResponseEntity<List<Medication>> getMedication(@PathVariable("serialNum") String serialNum) {
+        List<Medication> medication = medicationService.getMedicationByDroneSerialNumber(serialNum);
         return ResponseEntity.ok(medication);
     }
 
