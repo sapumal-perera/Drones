@@ -14,6 +14,8 @@ public interface DroneService {
 
     List<Drone> getAllDrones();
 
+    Long getAllDroneCount();
+
     Drone getDroneBySerialNumber(String serialNum);
 
     int getDroneBatteryLevel(String serialNumber);

@@ -23,6 +23,7 @@ import java.util.List;
 public class DroneManagerImpl implements DroneManager {
 
     Gson gsonBuilder = new GsonBuilder().create();
+    final int FLEET_LIMIT = 10;
     final int BATTERY_LIMIT = 25;
     final double WEIGHT_LIMIT = 500;
     final int SERIAL_CHARACTER_LIMIT = 100;
@@ -40,16 +41,18 @@ public class DroneManagerImpl implements DroneManager {
      */
     @Override
     public ResponseDTO registerDrone(Drone drone) {
-        if (!validateSerialNumber(drone.getSerialNumber())) {
+        if (droneDataService.getAllDroneCount() == FLEET_LIMIT) {
+            return new ResponseDTO(200, "Drone fleet is full. Unable add new Drones");
+        } else if (!validateSerialNumber(drone.getSerialNumber())) {
             return new ResponseDTO(400, "Entered serial number is incorrect");
         }  else if(!validateWightLimit(drone.getWeightLimit())) {
             return new ResponseDTO(400, "The medication load exceeds the weight limit.");
         } else {
-            Drone addedDrone = droneDataService.registerDrone(drone);
-            if(addedDrone != null) {
+            try {
+                droneDataService.registerDrone(drone);
                 return new ResponseDTO(200, "Drone registered successfully");
-            } else {
-                return new ResponseDTO(500, "Error occurred while adding the drone");
+            } catch (Exception e) {
+                return new ResponseDTO(500, "Error occurred while adding the drone" + e.toString());
             }
         }
     }
@@ -73,12 +76,11 @@ public class DroneManagerImpl implements DroneManager {
             } else {
                 drone.setState(DroneState.LOADING);
                 medication.setDrone(drone.getSerialNumber());
-                Medication loadedMed =  droneDataService.loadMedicationsToDrone(medication);
-                if(loadedMed != null) {
-                    drone.setState(DroneState.LOADED);
+                try {
+                    droneDataService.loadMedicationsToDrone(medication);
                     return new ResponseDTO(200, "Medication loaded successfully");
-                } else {
-                    return new ResponseDTO(500, "Error occurred");
+                } catch (Exception e) {
+                    return new ResponseDTO(500, "Error occurred while adding the medication" + e.toString());
                 }
             }
         } else {
@@ -123,7 +125,7 @@ public class DroneManagerImpl implements DroneManager {
     public ResponseDTO getDroneBatteryLevel(String serialNumber) {
         int droneBattery = droneDataService.getDroneBatteryLevel(serialNumber);
         if(droneBattery != -1) {
-            return new ResponseDTO(200, Integer.toString(droneBattery));
+            return new ResponseDTO(200, "Battery capacity: " + Integer.toString(droneBattery));
         } else {
             return new ResponseDTO(500, "Drone not found. Please check the serial number");
         }
@@ -137,8 +139,8 @@ public class DroneManagerImpl implements DroneManager {
      */
     @Override
     public ResponseDTO unloadMedication(String serialNumber) {
-        Drone drone = droneDataService.getDroneBySerialNumber(serialNumber);
-        if(drone != null) {
+        try {
+            Drone drone = droneDataService.getDroneBySerialNumber(serialNumber);
             List<Medication> medicationsForDrone = medicationService.getMedicationByDroneSerialNumber(drone.getSerialNumber());
             if(drone != null && medicationsForDrone !=null && medicationsForDrone.size() > 0) {
                 drone.setState(DroneState.IDLE);
@@ -153,10 +155,9 @@ public class DroneManagerImpl implements DroneManager {
                 return new ResponseDTO(200, "No medicine available to unload");
             }
             return new ResponseDTO(200, "Medicine unloaded successfully");
-        } else {
+        } catch (Exception e){
             return new ResponseDTO(500, "Drone not found. Please check the serial number");
         }
-
     }
 
     /**

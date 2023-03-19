@@ -1,5 +1,6 @@
 package com.example.drones.services;
 
+        import com.example.drones.models.ResponseDTO;
         import com.example.drones.repositories.MedicationRepository;
         import com.example.drones.models.Drone;
         import com.example.drones.models.DroneState;
@@ -50,11 +51,16 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
+    public Long getAllDroneCount() {
+        return droneRepository.count();
+    }
+
+    @Override
     public int getDroneBatteryLevel(String serialNumber) {
-        Drone drone = droneRepository.findBySerialNumber(serialNumber);
-        if(drone != null) {
+        try {
+            Drone drone = droneRepository.findBySerialNumber(serialNumber);
             return drone.getBatteryCapacity();
-        } else {
+        } catch (Exception e) {
             return -1;
         }
     }

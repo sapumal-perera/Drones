@@ -40,7 +40,7 @@ class DronesApplicationTests {
 
     @Test
     public void testRegisterDrone() {
-        Drone drone = new Drone("001", DroneModel.CRUISERWEIGHT, 500, 100, DroneState.LOADED, null);
+        Drone drone = new Drone("001", DroneModel.CRUISERWEIGHT, 300, 75, DroneState.LOADED, null);
         droneService.registerDrone(drone);
         verify(drones).add(drone);
     }
@@ -54,7 +54,6 @@ class DronesApplicationTests {
         );
         droneService.loadDrone(medications);
         verify(loadedMedications).put(droneSerialNumber, medications);
-//        verify(droneService).updateDroneState(droneSerialNumber, "LOADED");
     }
 
     @Test
@@ -72,15 +71,15 @@ class DronesApplicationTests {
     @Test
     public void testGetAvailableDrones() {
         List<Drone> allDrones = Arrays.asList(
-                new Drone("001", DroneModel.LIGHTWEIGHT, 500, 100,  DroneState.IDLE, null),
-                new Drone("002", DroneModel.MIDDLEWEIGHT, 500, 50, DroneState.LOADED, null),
-                new Drone("003", DroneModel.CRUISERWEIGHT, 500, 75, DroneState.IDLE, null),
-                new Drone("004", DroneModel.HEAVYWEIGHT, 500, 25, DroneState.RETURNING, null)
+                new Drone("001", DroneModel.LIGHTWEIGHT, 100, 100,  DroneState.IDLE, null),
+                new Drone("002", DroneModel.MIDDLEWEIGHT, 200, 50, DroneState.LOADED, null),
+                new Drone("003", DroneModel.CRUISERWEIGHT, 300, 75, DroneState.IDLE, null),
+                new Drone("004", DroneModel.HEAVYWEIGHT, 400, 80, DroneState.RETURNING, null)
         );
         when(drones.iterator()).thenReturn(allDrones.iterator());
         List<Drone> expectedDrones = Arrays.asList(
-                new Drone("001", DroneModel.LIGHTWEIGHT, 500, 100,  DroneState.IDLE, null),
-                new Drone("003", DroneModel.CRUISERWEIGHT, 500, 75, DroneState.IDLE, null)
+                new Drone("001", DroneModel.LIGHTWEIGHT, 100, 100,  DroneState.IDLE, null),
+                new Drone("003", DroneModel.CRUISERWEIGHT, 300, 75, DroneState.IDLE, null)
         );
         List<Drone> result = droneService.getAvailableDrones();
         assertEquals(expectedDrones, result);
@@ -89,7 +88,6 @@ class DronesApplicationTests {
     @Test
     public void testGetDroneBatteryLevel() {
         String droneSerialNumber = "001";
-        // TODO: mock getting drone battery level from the actual drone
         int expectedBatteryLevel = 80;
         int result = droneService.getDroneBatteryLevel(droneSerialNumber);
         assertEquals(expectedBatteryLevel, result);
