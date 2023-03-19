@@ -1,5 +1,7 @@
-package com.example.drones;
+package com.example.drones.controllers;
 
+import com.example.drones.services.MedicationService;
+import com.example.drones.models.Medication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

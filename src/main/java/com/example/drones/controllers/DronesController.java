@@ -1,9 +1,12 @@
-package com.example.drones;
+package com.example.drones.controllers;
 
+import com.example.drones.datamanagers.DroneManager;
+import com.example.drones.models.ResponseDTO;
+import com.example.drones.models.Drone;
+import com.example.drones.models.Medication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;

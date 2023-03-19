@@ -1,5 +1,7 @@
-package com.example.drones;
+package com.example.drones.repositories;
 
+import com.example.drones.models.Drone;
+import com.example.drones.models.DroneState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

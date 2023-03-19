@@ -1,17 +1,21 @@
-package com.example.drones;
+package com.example.drones.datamanagers;
 
+import com.example.drones.datamanagers.DroneManager;
+import com.example.drones.models.Drone;
+import com.example.drones.models.DroneState;
+import com.example.drones.models.Medication;
+import com.example.drones.models.ResponseDTO;
+import com.example.drones.services.DroneServiceImpl;
+import com.example.drones.services.MedicationService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 

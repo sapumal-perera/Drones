@@ -1,5 +1,10 @@
-package com.example.drones;
+package com.example.drones.services;
 
+        import com.example.drones.repositories.MedicationRepository;
+        import com.example.drones.models.Drone;
+        import com.example.drones.models.DroneState;
+        import com.example.drones.models.Medication;
+        import com.example.drones.repositories.DroneRepository;
         import com.google.gson.Gson;
         import com.google.gson.GsonBuilder;
         import jakarta.transaction.Transactional;
@@ -25,7 +30,7 @@ public class DroneServiceImpl implements DroneService {
     }
 
     @Override
-    public Medication loadMedicationsToDrone( Medication medication) {
+    public Medication loadMedicationsToDrone(Medication medication) {
         return medicationRepository.save(medication);
     }
 

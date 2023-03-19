@@ -1,7 +1,8 @@
-package com.example.drones;
+package com.example.drones.services;
+
+import com.example.drones.models.Medication;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MedicationService {
 

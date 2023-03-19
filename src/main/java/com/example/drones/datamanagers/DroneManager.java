@@ -1,4 +1,8 @@
-package com.example.drones;
+package com.example.drones.datamanagers;
+
+import com.example.drones.models.Drone;
+import com.example.drones.models.Medication;
+import com.example.drones.models.ResponseDTO;
 
 import java.util.List;
 

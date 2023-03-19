@@ -1,4 +1,4 @@
-package com.example.drones;
+package com.example.drones.models;
 
 import jakarta.persistence.*;
 
